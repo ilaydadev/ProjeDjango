@@ -1,0 +1,109 @@
+{% extends 'index.html' %}
+
+{% block content %}
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                {% if gorev %}
+                <div class="card shadow">
+                    <div class="card-header bg-info text-white">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h2><i class="fas fa-tasks"></i> {{ gorev.baslik }}</h2>
+                            </div>
+                            <div class="col-auto">
+                                <span class="badge bg-light text-dark">{{ gun }} - {{ tarih }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <h4>Görev Detayları</h4>
+                                <table class="table table-borderless">
+                                    <tr>
+                                        <td><strong>Saat:</strong></td>
+                                        <td><i class="fas fa-clock"></i> {{ gorev.saat }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Açıklama:</strong></td>
+                                        <td>{{ gorev.aciklama }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Kategori:</strong></td>
+                                        <td><span class="badge bg-secondary">{{ gorev.kategori }}</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Öncelik:</strong></td>
+                                        <td>
+                                            {% if gorev.oncelik == 'yüksek' %}
+                                                <span class="badge bg-danger">🔴 Yüksek</span>
+                                            {% elif gorev.oncelik == 'orta' %}
+                                                <span class="badge bg-warning">🟡 Orta</span>
+                                            {% else %}
+                                                <span class="badge bg-success">🟢 Düşük</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Tahmini Süre:</strong></td>
+                                        <td><i class="fas fa-hourglass-half"></i> {{ gorev.tahmini_sure }}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card bg-light">
+                                    <div class="card-body text-center">
+                                        <h5>Durum</h5>
+                                        {% if gorev.durum == 'tamamlandı' %}
+                                            <div class="text-success">
+                                                <i class="fas fa-check-circle fa-3x"></i>
+                                                <p class="mt-2"><strong>Tamamlandı</strong></p>
+                                            </div>
+                                        {% elif gorev.durum == 'devam ediyor' %}
+                                            <div class="text-warning">
+                                                <i class="fas fa-play-circle fa-3x"></i>
+                                                <p class="mt-2"><strong>Devam Ediyor</strong></p>
+                                            </div>
+                                        {% else %}
+                                            <div class="text-danger">
+                                                <i class="fas fa-clock fa-3x"></i>
+                                                <p class="mt-2"><strong>Bekliyor</strong></p>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="text-center mt-4">
+                            <a href="{% url 'home' %}" class="btn btn-secondary me-2">
+                                <i class="fas fa-home"></i> Ana Sayfa
+                            </a>
+                            <button class="btn btn-success me-2">
+                                <i class="fas fa-check"></i> Tamamlandı İşaretle
+                            </button>
+                            <button class="btn btn-primary">
+                                <i class="fas fa-edit"></i> Düzenle
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <div class="card shadow">
+                    <div class="card-header bg-danger text-white text-center">
+                        <h2><i class="fas fa-exclamation-triangle"></i> Hata</h2>
+                    </div>
+                    <div class="card-body text-center">
+                        <p class="lead">{{ hata|default:"Görev bulunamadı" }}</p>
+                        <p>Aradığınız {{ id }} numaralı görev mevcut değil.</p>
+                        <a href="{% url 'home' %}" class="btn btn-primary">
+                            <i class="fas fa-home"></i> Ana Sayfaya Dön
+                        </a>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
