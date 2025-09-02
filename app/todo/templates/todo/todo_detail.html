@@ -1,0 +1,79 @@
+{% extends 'index.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3>{{ todo.title }}</h3>
+                    <small class="text-muted">
+                        Oluşturuldu: {{ todo.created_at|date:"d M Y H:i" }}
+                        {% if todo.due_date %}
+                            | Bitiş: {{ todo.due_date|date:"d M Y" }}
+                        {% endif %}
+                    </small>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <h5>Açıklama</h5>
+                            <p>{{ todo.description|default:"Açıklama bulunmuyor." }}</p>
+                            
+                            <h5>Detaylar</h5>
+                            <table class="table table-borderless">
+                                <tr>
+                                    <td><strong>Öncelik:</strong></td>
+                                    <td>
+                                        <span class="badge bg-{% if todo.priority == 'high' %}danger{% elif todo.priority == 'medium' %}warning{% else %}success{% endif %}">
+                                            {{ todo.get_priority_display }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Durum:</strong></td>
+                                    <td>
+                                        <span class="badge bg-{% if todo.status == 'completed' %}bg-success{% else %}bg-warning{% endif %}">
+                                            {{ todo.get_status_display }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                {% if todo.due_date %}
+                                <tr>
+                                    <td><strong>Bitiş Tarihi:</strong></td>
+                                    <td>{{ todo.due_date|date:"d M Y" }}</td>
+                                </tr>
+                                {% endif %}
+                            </table>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h6>İşlemler</h6>
+                                    <form method="post" action="{% url 'todo_update_status' todo.id %}">
+                                        {% csrf_token %}
+                                        {% if todo.status == 'pending' %}
+                                            <input type="hidden" name="status" value="completed">
+                                            <button type="submit" class="btn btn-success btn-sm w-100 mb-2">
+                                                ✓ Tamamlandı İşaretle
+                                            </button>
+                                        {% else %}
+                                            <input type="hidden" name="status" value="pending">
+                                            <button type="submit" class="btn btn-warning btn-sm w-100 mb-2">
+                                                ↻ Bekliyor İşaretle
+                                            </button>
+                                        {% endif %}
+                                    </form>
+                                    <a href="{% url 'todo_list' %}" class="btn btn-outline-primary btn-sm w-100">
+                                        ← Todo Listesi
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

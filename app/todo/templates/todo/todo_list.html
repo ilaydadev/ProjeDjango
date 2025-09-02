@@ -1,109 +1,160 @@
 {% extends 'index.html' %}
 
 {% block content %}
-    <div class="container mt-5">
-        <div class="row justify-content-center">
-            <div class="col-md-10">
-                {% if gorev %}
-                <div class="card shadow">
-                    <div class="card-header bg-info text-white">
-                        <div class="row align-items-center">
-                            <div class="col">
-                                <h2><i class="fas fa-tasks"></i> {{ gorev.baslik }}</h2>
-                            </div>
-                            <div class="col-auto">
-                                <span class="badge bg-light text-dark">{{ gun }} - {{ tarih }}</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-body">
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h3>Todo Listesi</h3>
+                    <a href="{% url 'todo_create' %}" class="btn btn-primary">Yeni Todo</a>
+                </div>
+                <div class="card-body">
+                    <!-- Filtreler -->
+                    <form method="get" class="mb-4">
                         <div class="row">
-                            <div class="col-md-8">
-                                <h4>Görev Detayları</h4>
-                                <table class="table table-borderless">
-                                    <tr>
-                                        <td><strong>Saat:</strong></td>
-                                        <td><i class="fas fa-clock"></i> {{ gorev.saat }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>Açıklama:</strong></td>
-                                        <td>{{ gorev.aciklama }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>Kategori:</strong></td>
-                                        <td><span class="badge bg-secondary">{{ gorev.kategori }}</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>Öncelik:</strong></td>
-                                        <td>
-                                            {% if gorev.oncelik == 'yüksek' %}
-                                                <span class="badge bg-danger">🔴 Yüksek</span>
-                                            {% elif gorev.oncelik == 'orta' %}
-                                                <span class="badge bg-warning">🟡 Orta</span>
-                                            {% else %}
-                                                <span class="badge bg-success">🟢 Düşük</span>
-                                            {% endif %}
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>Tahmini Süre:</strong></td>
-                                        <td><i class="fas fa-hourglass-half"></i> {{ gorev.tahmini_sure }}</td>
-                                    </tr>
-                                </table>
+                            <div class="col-md-4">
+                                <select name="status" class="form-control">
+                                    <option value="">Tüm Durumlar</option>
+                                    <option value="pending" {% if status_filter == 'pending' %}selected{% endif %}>Bekleyen</option>
+                                    <option value="completed" {% if status_filter == 'completed' %}selected{% endif %}>Tamamlanan</option>
+                                </select>
                             </div>
                             <div class="col-md-4">
-                                <div class="card bg-light">
-                                    <div class="card-body text-center">
-                                        <h5>Durum</h5>
-                                        {% if gorev.durum == 'tamamlandı' %}
-                                            <div class="text-success">
-                                                <i class="fas fa-check-circle fa-3x"></i>
-                                                <p class="mt-2"><strong>Tamamlandı</strong></p>
-                                            </div>
-                                        {% elif gorev.durum == 'devam ediyor' %}
-                                            <div class="text-warning">
-                                                <i class="fas fa-play-circle fa-3x"></i>
-                                                <p class="mt-2"><strong>Devam Ediyor</strong></p>
-                                            </div>
-                                        {% else %}
-                                            <div class="text-danger">
-                                                <i class="fas fa-clock fa-3x"></i>
-                                                <p class="mt-2"><strong>Bekliyor</strong></p>
-                                            </div>
-                                        {% endif %}
-                                    </div>
-                                </div>
+                                <select name="priority" class="form-control">
+                                    <option value="">Tüm Öncelikler</option>
+                                    <option value="low" {% if priority_filter == 'low' %}selected{% endif %}>Düşük</option>
+                                    <option value="medium" {% if priority_filter == 'medium' %}selected{% endif %}>Orta</option>
+                                    <option value="high" {% if priority_filter == 'high' %}selected{% endif %}>Yüksek</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <button type="submit" class="btn btn-outline-primary">Filtrele</button>
+                                <a href="{% url 'todo_list' %}" class="btn btn-outline-secondary">Temizle</a>
                             </div>
                         </div>
-                        
-                        <div class="text-center mt-4">
-                            <a href="{% url 'home' %}" class="btn btn-secondary me-2">
-                                <i class="fas fa-home"></i> Ana Sayfa
-                            </a>
-                            <button class="btn btn-success me-2">
-                                <i class="fas fa-check"></i> Tamamlandı İşaretle
-                            </button>
-                            <button class="btn btn-primary">
-                                <i class="fas fa-edit"></i> Düzenle
-                            </button>
+                    </form>
+
+                    <!-- Todo Listesi -->
+                    {% if todos %}
+                        <div class="list-group">
+                            {% for todo in todos %}
+                                <div class="list-group-item">
+                                    <div class="row align-items-center">
+                                        <div class="col-md-8">
+                                            <h5>
+                                                <a href="{% url 'todo_detail' todo.id %}" class="text-decoration-none">
+                                                    {{ todo.title }}
+                                                </a>
+                                            </h5>
+                                            <p class="mb-1">{{ todo.description|truncatewords:15 }}</p>
+                                            <small class="text-muted">
+                                                Oluşturuldu: {{ todo.created_at|date:"d M Y H:i" }}
+                                                {% if todo.due_date %}
+                                                    | Bitiş: {{ todo.due_date|date:"d M Y" }}
+                                                {% endif %}
+                                            </small>
+                                        </div>
+                                        <div class="col-md-2 text-center">
+                                            <span class="badge bg-{% if todo.priority == 'high' %}danger{% elif todo.priority == 'medium' %}warning{% else %}success{% endif %}">
+                                                {{ todo.get_priority_display }}
+                                            </span>
+                                        </div>
+                                        <div class="col-md-2 text-center">
+                                            <form method="post" action="{% url 'todo_update_status' todo.id %}" class="d-inline">
+                                                {% csrf_token %}
+                                                {% if todo.status == 'pending' %}
+                                                    <input type="hidden" name="status" value="completed">
+                                                    <button type="submit" class="btn btn-success btn-sm">Tamamla</button>
+                                                {% else %}
+                                                    <input type="hidden" name="status" value="pending">
+                                                    <button type="submit" class="btn btn-warning btn-sm">Geri Al</button>
+                                                {% endif %}
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
                         </div>
-                    </div>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <h5 class="text-muted">Henüz hiç todo oluşturmamışsınız.</h5>
+                            <a href="{% url 'todo_create' %}" class="btn btn-primary">İlk Todo'nuzu Oluşturun</a>
+                        </div>
+                    {% endif %}
+
+                    <!-- Pagination -->
+                    {% if page_obj.has_other_pages %}
+                        <nav aria-label="Todo pagination" class="mt-4">
+                            <ul class="pagination justify-content-center">
+                                <!-- İlk sayfa butonu -->
+                                {% if page_obj.has_previous %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page=1{% if status_filter %}&status={{ status_filter }}{% endif %}{% if priority_filter %}&priority={{ priority_filter }}{% endif %}" aria-label="İlk">
+                                            <span aria-hidden="true">&laquo;&laquo;</span>
+                                        </a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if priority_filter %}&priority={{ priority_filter }}{% endif %}" aria-label="Önceki">
+                                            <span aria-hidden="true">&laquo;</span>
+                                        </a>
+                                    </li>
+                                {% else %}
+                                    <li class="page-item disabled">
+                                        <span class="page-link">&laquo;&laquo;</span>
+                                    </li>
+                                    <li class="page-item disabled">
+                                        <span class="page-link">&laquo;</span>
+                                    </li>
+                                {% endif %}
+
+                                <!-- Sayfa numaraları -->
+                                {% for num in page_obj.paginator.page_range %}
+                                    {% if page_obj.number == num %}
+                                        <li class="page-item active">
+                                            <span class="page-link">{{ num }}</span>
+                                        </li>
+                                    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="?page={{ num }}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if priority_filter %}&priority={{ priority_filter }}{% endif %}">{{ num }}</a>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+
+                                <!-- Son sayfa butonu -->
+                                {% if page_obj.has_next %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if priority_filter %}&priority={{ priority_filter }}{% endif %}" aria-label="Sonraki">
+                                            <span aria-hidden="true">&raquo;</span>
+                                        </a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if priority_filter %}&priority={{ priority_filter }}{% endif %}" aria-label="Son">
+                                            <span aria-hidden="true">&raquo;&raquo;</span>
+                                        </a>
+                                    </li>
+                                {% else %}
+                                    <li class="page-item disabled">
+                                        <span class="page-link">&raquo;</span>
+                                    </li>
+                                    <li class="page-item disabled">
+                                        <span class="page-link">&raquo;&raquo;</span>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </nav>
+
+                        <!-- Sayfa bilgisi -->
+                        <div class="text-center text-muted mt-2">
+                            <small>
+                                Sayfa {{ page_obj.number }} / {{ page_obj.paginator.num_pages }} 
+                                (Toplam {{ page_obj.paginator.count }} todo)
+                            </small>
+                        </div>
+                    {% endif %}
                 </div>
-                {% else %}
-                <div class="card shadow">
-                    <div class="card-header bg-danger text-white text-center">
-                        <h2><i class="fas fa-exclamation-triangle"></i> Hata</h2>
-                    </div>
-                    <div class="card-body text-center">
-                        <p class="lead">{{ hata|default:"Görev bulunamadı" }}</p>
-                        <p>Aradığınız {{ id }} numaralı görev mevcut değil.</p>
-                        <a href="{% url 'home' %}" class="btn btn-primary">
-                            <i class="fas fa-home"></i> Ana Sayfaya Dön
-                        </a>
-                    </div>
-                </div>
-                {% endif %}
             </div>
         </div>
     </div>
+</div>
 {% endblock %}

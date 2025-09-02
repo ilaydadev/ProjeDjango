@@ -1,219 +1,156 @@
-from django.shortcuts import render
-from django.http import HttpResponse
-
-
-from django.shortcuts import render
-from django.http import HttpResponse
-
-
-data = {
-    'pazartesi': {
-        'gun_adi': 'Pazartesi',
-        'tarih': '19.08.2024',
-        'gorevler': [
-            {
-                'id': 1,
-                'saat': '09:00',
-                'baslik': 'Güne Başlangıç',
-                'aciklama': 'Kahvaltı yapıp güne başlamak',
-                'kategori': 'Günlük Rutin',
-                'oncelik': 'yüksek',
-                'durum': 'tamamlanmadı',
-                'tahmini_sure': '30 dakika'
-            },
-            {
-                'id': 2,
-                'saat': '10:00',
-                'baslik': 'E-posta Kontrolü',
-                'aciklama': 'Gelen e-postaları kontrol et ve cevapla',
-                'kategori': 'İş',
-                'oncelik': 'orta',
-                'durum': 'tamamlandı',
-                'tahmini_sure': '45 dakika'
-            },
-            {
-                'id': 3,
-                'saat': '14:00',
-                'baslik': 'Proje Toplantısı',
-                'aciklama': 'Django projesi hakkında ekip toplantısı',
-                'kategori': 'İş',
-                'oncelik': 'yüksek',
-                'durum': 'tamamlanmadı',
-                'tahmini_sure': '90 dakika'
-            }
-        ]
-    },
-    'sali': {
-        'gun_adi': 'Salı',
-        'tarih': '20.08.2024',
-        'gorevler': [
-            {
-                'id': 4,
-                'saat': '08:30',
-                'baslik': 'Spor Salonu',
-                'aciklama': 'Haftalık fitness rutini',
-                'kategori': 'Sağlık',
-                'oncelik': 'yüksek',
-                'durum': 'tamamlanmadı',
-                'tahmini_sure': '60 dakika'
-            },
-            {
-                'id': 5,
-                'saat': '19:00',
-                'baslik': 'Akşam Yemeği',
-                'aciklama': 'Aile ile birlikte yemek',
-                'kategori': 'Kişisel',
-                'oncelik': 'orta',
-                'durum': 'tamamlanmadı',
-                'tahmini_sure': '45 dakika'
-            }
-        ]
-    },
-    'carsamba': {
-        'gun_adi': 'Çarşamba',
-        'tarih': '21.08.2024',
-        'gorevler': [
-            {
-                'id': 6,
-                'saat': '11:00',
-                'baslik': 'Django Kodlama',
-                'aciklama': 'Todo uygulaması geliştirme',
-                'kategori': 'Programlama',
-                'oncelik': 'yüksek',
-                'durum': 'devam ediyor',
-                'tahmini_sure': '120 dakika'
-            },
-            {
-                'id': 7,
-                'saat': '16:00',
-                'baslik': 'Kitap Okuma',
-                'aciklama': 'Python öğrenme kitabı',
-                'kategori': 'Eğitim',
-                'oncelik': 'orta',
-                'durum': 'tamamlanmadı',
-                'tahmini_sure': '60 dakika'
-            }
-        ]
-    },
-    'persembe': {
-        'gun_adi': 'Perşembe',
-        'tarih': '22.08.2024',
-        'gorevler': [
-            {
-                'id': 8,
-                'saat': '09:30',
-                'baslik': 'Kod İnceleme',
-                'aciklama': 'Önceki günün kodlarını gözden geçir',
-                'kategori': 'Programlama',
-                'oncelik': 'orta',
-                'durum': 'tamamlanmadı',
-                'tahmini_sure': '45 dakika'
-            },
-            {
-                'id': 9,
-                'saat': '21:00',
-                'baslik': 'Yeni Özellik Kodlama',
-                'aciklama': 'Todo uygulamasına yeni özellikler ekle',
-                'kategori': 'Programlama',
-                'oncelik': 'yüksek',
-                'durum': 'tamamlanmadı',
-                'tahmini_sure': '90 dakika'
-            }
-        ]
-    },
-    'cuma': {
-        'gun_adi': 'Cuma',
-        'tarih': '23.08.2024',
-        'gorevler': [
-            {
-                'id': 10,
-                'saat': '10:00',
-                'baslik': 'Haftalık Değerlendirme',
-                'aciklama': 'Bu haftaki işleri gözden geçir',
-                'kategori': 'Planlama',
-                'oncelik': 'orta',
-                'durum': 'tamamlanmadı',
-                'tahmini_sure': '30 dakika'
-            },
-            {
-                'id': 11,
-                'saat': '15:00',
-                'baslik': 'Arkadaşlarla Buluşma',
-                'aciklama': 'Hafta sonu planları yapmak',
-                'kategori': 'Sosyal',
-                'oncelik': 'düşük',
-                'durum': 'tamamlanmadı',
-                'tahmini_sure': '120 dakika'
-            }
-        ]
-    }
-}
-def todo_list(request, id):
-    # ID'ye göre spesifik görev bulma
-    for gun_key, gun_data in data.items():
-        for gorev in gun_data.get('gorevler', []):
-            if gorev['id'] == id:
-                context = {
-                    'gorev': gorev,
-                    'gun': gun_data['gun_adi'],
-                    'tarih': gun_data['tarih'],
-                    'id': id
-                }
-                return render(request, 'todo/todo_list.html', context)
-    
-    # Görev bulunamazsa
-    return render(request, 'todo/todo_list.html', {
-        'hata': 'Görev bulunamadı',
-        'id': id
-    })
-
-def login(request):
-    return render(request, 'todo/login.html')
-
-def register(request):
-    return render(request, 'todo/register.html')
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth import authenticate, login as auth_login, logout
+from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from .models import Todo
+from django.core.paginator import Paginator
 
 def home(request):
-    # Ana sayfada günlerin özetini göster
-    gun_ozeti = {}
-    for gun_key, gun_data in data.items():
-        toplam_gorev = len(gun_data.get('gorevler', []))
-        tamamlanan = len([g for g in gun_data.get('gorevler', []) if g['durum'] == 'tamamlandı'])
-        gun_ozeti[gun_key] = {
-            'gun_adi': gun_data['gun_adi'],
-            'tarih': gun_data['tarih'],
-            'toplam_gorev': toplam_gorev,
-            'tamamlanan': tamamlanan,
-            'kalan': toplam_gorev - tamamlanan
-        }
-    
-    context = {'gun_ozeti': gun_ozeti}
-    return render(request, 'todo/home.html', context)
-
-def get_todo_list_day(request, day):
-    try:
-        gun_data = data[day.lower()]
+    """Ana sayfa - Giriş yapmışsa todo'larını göster"""
+    if request.user.is_authenticated:
+        # Giriş yapmış kullanıcının todo'ları
+        todos = Todo.objects.filter(user=request.user)
         context = {
-            'gun_data': gun_data,
-            'gun': day.lower()
+            'todos': todos,
+            'todo_count': todos.count(),
+            'completed_count': todos.filter(status='completed').count(),
+            'pending_count': todos.filter(status='pending').count(),
         }
-        return render(request, 'todo/gunluk_todo.html', context)
-    except KeyError:
-        return HttpResponse("Geçersiz gün. Lütfen geçerli bir gün adı girin (pazartesi, sali, vs.)")
+        return render(request, 'todo/home.html', context)
+    else:
+        return render(request, 'todo/home.html')
 
-def get_all_todos(request):
-    context = {'data': data}
-    return render(request, 'todo/tum_gorevler.html', context)
-def get_todo_by_category(request, kategori):
-    kategorili_gorevler = []
-    for gun_key, gun_data in data.items():
-        for gorev in gun_data.get('gorevler', []):
-            if gorev['kategori'].lower() == kategori.lower():
-                gorev['gun'] = gun_data['gun_adi']
-                kategorili_gorevler.append(gorev)
+def login_view(request):
+    """Kullanıcı giriş sayfası"""
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            auth_login(request, user)
+            messages.success(request, f'Hoş geldiniz {user.username}!')
+            return redirect('home')
+        else:
+            messages.error(request, 'Kullanıcı adı veya şifre hatalı!')
+    
+    return render(request, 'todo/login.html')
+
+def register_view(request):
+    """Kullanıcı kayıt sayfası"""
+    if request.method == 'POST':
+        username = request.POST['username']
+        email = request.POST['email']
+        password = request.POST['password']
+        password_confirm = request.POST.get('password_confirm', '')
+        
+        # Basit validasyon
+        if password != password_confirm:
+            messages.error(request, 'Şifreler eşleşmiyor!')
+            return render(request, 'todo/register.html')
+        
+        if User.objects.filter(username=username).exists():
+            messages.error(request, 'Bu kullanıcı adı zaten alınmış!')
+            return render(request, 'todo/register.html')
+        
+        if User.objects.filter(email=email).exists():
+            messages.error(request, 'Bu e-posta zaten kayıtlı!')
+            return render(request, 'todo/register.html')
+        
+        # Kullanıcı oluştur
+        user = User.objects.create_user(
+            username=username,
+            email=email,
+            password=password
+        )
+        messages.success(request, 'Kayıt başarılı! Şimdi giriş yapabilirsiniz.')
+        return redirect('login')
+    
+    return render(request, 'todo/register.html')
+
+@login_required
+def todo_list(request):
+    """Kullanıcının tüm todo'larını listele"""
+    todos = Todo.objects.filter(user=request.user)
+    
+    # Filtreleme
+    status_filter = request.GET.get('status', '')
+    priority_filter = request.GET.get('priority', '')
+    page_number = request.GET.get('page', 1)
+    
+    if status_filter:
+        todos = todos.filter(status=status_filter)
+    if priority_filter:
+        todos = todos.filter(priority=priority_filter)
+
+    # Sayfalama
+    paginator = Paginator(todos, 10)  # Sayfa başına 10 todo göster
+    page_obj = paginator.get_page(page_number)
+
     
     context = {
-        'gorevler': kategorili_gorevler,
-        'kategori': kategori
+        'todos': todos,
+        'page_obj': page_obj,
+        'status_filter': status_filter,
+        'priority_filter': priority_filter,
     }
-    return render(request, 'todo/kategori_gorevler.html', context)
+    return render(request, 'todo/todo_list.html', context)
+
+@login_required
+def todo_detail(request, id):
+    """Spesifik todo detayı"""
+    todo = get_object_or_404(Todo, id=id, user=request.user)
+    
+    context = {
+        'todo': todo,
+    }
+    return render(request, 'todo/todo_detail.html', context)
+
+@login_required
+def todo_create(request):
+    """Yeni todo oluştur"""
+    if request.method == 'POST':
+        title = request.POST['title']
+        description = request.POST.get('description', '')
+        priority = request.POST.get('priority', 'medium')
+        due_date = request.POST.get('due_date', None)
+        
+        # Boş due_date'i None yap
+        if due_date == '':
+            due_date = None
+        
+        todo = Todo.objects.create(
+            user=request.user,
+            title=title,
+            description=description,
+            priority=priority,
+            due_date=due_date
+        )
+        
+        messages.success(request, f'"{title}" todosu oluşturuldu!')
+        return redirect('todo_list')
+    
+    return render(request, 'todo/todo_create.html')
+
+@login_required
+def todo_update_status(request, id):
+    """Todo durumunu güncelle (tamamlandı/bekliyor)"""
+    if request.method == 'POST':
+        todo = get_object_or_404(Todo, id=id, user=request.user)
+        new_status = request.POST.get('status')
+        
+        if new_status in ['pending', 'completed']:
+            todo.status = new_status
+            todo.save()
+            messages.success(request, f'Todo durumu güncellendi!')
+        
+        return redirect('todo_list')
+    
+    return redirect('todo_list')
+
+def logout_view(request):
+    """Kullanıcı çıkış""" #basit düzey
+    logout(request)
+    messages.success(request, 'Başarıyla çıkış yaptınız!')
+    return redirect('home')
