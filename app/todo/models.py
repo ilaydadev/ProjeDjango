@@ -1,4 +1,5 @@
 from django.db import models
+<<<<<<< HEAD
 from django.contrib.auth.models import User
 from django.contrib import admin
 
@@ -32,3 +33,7 @@ class Todo(models.Model):
         ordering = ['-created_at'] # Yeni önceliği belirler zamana göre işimizi kolaylaştırı.
 # Admin paneli için
 admin.site.register(Todo)
+=======
+
+# Create your models here.
+>>>>>>> 053c74df2c30cc2feccea9dd9c2f9dffaed6b0ae

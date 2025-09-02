@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login as auth_login, logout
 from django.contrib.auth.models import User
@@ -154,3 +155,19 @@ def logout_view(request):
     logout(request)
     messages.success(request, 'Başarıyla çıkış yaptınız!')
     return redirect('home')
+=======
+from django.shortcuts import render
+from django.http import HttpResponse
+
+def todo_list(request,id):
+    return render(request,'todo/todo_list.html',{'id' : id})
+
+def login(request):
+    return render(request,'todo/login.html')
+
+def register(request):
+    return render(request,'todo/register.html')
+
+def home(request):
+    return render(request,'todo/home.html')
+>>>>>>> 053c74df2c30cc2feccea9dd9c2f9dffaed6b0ae
